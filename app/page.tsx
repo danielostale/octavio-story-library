@@ -22,8 +22,13 @@ export default async function Home() {
           <section className="cardGrid">
             <Link href="/new" className="card actionCard">
               <span className="cardIcon">✦</span>
-              <h2>Crear un cuento</h2>
-              <p>Histórico o personal, con defaults inteligentes según la edad.</p>
+              <h2>Historia / conocimiento</h2>
+              <p>Cuentos históricos o educativos, con versión rápida Gemini o libro completo con ChatGPT.</p>
+            </Link>
+            <Link href="/personal" className="card actionCard">
+              <span className="cardIcon">◉</span>
+              <h2>Historia familiar</h2>
+              <p>Graba un recuerdo, Gemini lo transcribe y luego eliges Gemini o ChatGPT.</p>
             </Link>
             <div className="card actionCard" aria-disabled="true">
               <span className="cardIcon">▤</span>
@@ -69,8 +74,13 @@ export default async function Home() {
         <section className="cardGrid">
           <Link href="/new" className="card actionCard">
             <span className="cardIcon">✦</span>
-            <h2>Crear un cuento</h2>
-            <p>Histórico o personal, con defaults inteligentes según la edad.</p>
+            <h2>Historia / conocimiento</h2>
+            <p>Cuentos históricos o educativos, con versión rápida Gemini o libro completo con ChatGPT.</p>
+          </Link>
+          <Link href="/personal" className="card actionCard">
+            <span className="cardIcon">◉</span>
+            <h2>Historia familiar</h2>
+            <p>Graba un recuerdo, Gemini lo transcribe y luego eliges Gemini o ChatGPT.</p>
           </Link>
           <Link href="/library" className="card actionCard">
             <span className="cardIcon">▤</span>
