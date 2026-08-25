@@ -16,8 +16,12 @@ function parseModelJson(text: string) {
 }
 
 export async function POST(request: Request) {
-  const session = await auth();
-  if (!session?.user) {
+  const oauthConfigured = Boolean(
+    process.env.AUTH_GOOGLE_ID && process.env.AUTH_GOOGLE_SECRET,
+  );
+  const session = oauthConfigured ? await auth() : null;
+
+  if (oauthConfigured && !session?.user) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
@@ -33,7 +37,7 @@ export async function POST(request: Request) {
     : "edad infantil no especificada";
 
   let family = null;
-  if (body.mode === "personal" && session.accessToken) {
+  if (body.mode === "personal" && session?.accessToken) {
     try {
       family = await getFamilyProfile(driveClient(session.accessToken));
     } catch (error) {
