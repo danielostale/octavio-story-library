@@ -1,6 +1,6 @@
 {
   "name": "octavio-story-library",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -10,10 +10,10 @@
   },
   "dependencies": {
     "googleapis": "176.0.0",
-    "next": "15.5.23",
+    "next": "15.4.1",
     "next-auth": "5.0.0-beta.32",
-    "react": "^19.2.0",
-    "react-dom": "^19.2.0",
+    "react": "19.1.1",
+    "react-dom": "19.1.1",
     "zod": "^4.0.0"
   },
   "devDependencies": {
