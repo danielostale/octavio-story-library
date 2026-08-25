@@ -1,11 +1,11 @@
 {
   "name": "octavio-story-library",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev -H 0.0.0.0 -p 3000",
     "build": "next build",
-    "start": "next start",
+    "start": "next start -H 0.0.0.0 -p 3000",
     "typecheck": "tsc --noEmit",
     "reset": "rm -rf node_modules .next package-lock.json && npm install && npm run dev"
   },
@@ -24,6 +24,6 @@
     "typescript": "^5.9.0"
   },
   "stackblitz": {
-    "startCommand": "npm run dev"
+    "startCommand": "npm install && npm run dev"
   }
 }
