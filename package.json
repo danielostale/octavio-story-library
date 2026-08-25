@@ -1,12 +1,13 @@
 {
   "name": "octavio-story-library",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "private": true,
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "reset": "rm -rf node_modules .next package-lock.json && npm install && npm run dev"
   },
   "dependencies": {
     "googleapis": "176.0.0",
