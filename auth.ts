@@ -1,6 +1,12 @@
 import NextAuth from "next-auth";
 import Google from "next-auth/providers/google";
 
+const authSecret =
+  process.env.AUTH_SECRET ||
+  (process.env.NODE_ENV !== "production"
+    ? "octavio-story-library-dev-secret-only"
+    : undefined);
+
 async function refreshGoogleToken(token: any) {
   try {
     const response = await fetch("https://oauth2.googleapis.com/token", {
@@ -31,6 +37,7 @@ async function refreshGoogleToken(token: any) {
 }
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
+  secret: authSecret,
   trustHost: true,
   providers: [
     Google({
@@ -76,7 +83,6 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       return refreshGoogleToken(token);
     },
     async session({ session, token }) {
-      // Used only by server route handlers in this MVP.
       session.accessToken = token.accessToken as string | undefined;
       session.authError = token.error as string | undefined;
       return session;
