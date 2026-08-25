@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { auth } from "@/auth";
 import { childAgeLabel } from "@/lib/age";
 import { driveClient, getFamilyProfile } from "@/lib/google-drive";
-import { openai } from "@/lib/openai";
+import { generateWithGemini } from "@/lib/gemini";
 import { buildStoryPrompt } from "@/lib/prompts";
 import type { Story, StoryRequest } from "@/lib/types";
 
@@ -17,7 +17,9 @@ function parseModelJson(text: string) {
 
 export async function POST(request: Request) {
   const session = await auth();
-  if (!session?.user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  if (!session?.user) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
 
   const body = (await request.json()) as StoryRequest;
   if (!body.topic?.trim()) {
@@ -26,7 +28,9 @@ export async function POST(request: Request) {
 
   const birthDate = process.env.CHILD_BIRTH_DATE || "";
   const childName = process.env.CHILD_NAME || "Octavio";
-  const ageLabel = birthDate ? childAgeLabel(birthDate) : "edad infantil no especificada";
+  const ageLabel = birthDate
+    ? childAgeLabel(birthDate)
+    : "edad infantil no especificada";
 
   let family = null;
   if (body.mode === "personal" && session.accessToken) {
@@ -37,14 +41,13 @@ export async function POST(request: Request) {
     }
   }
 
-  const prompt = buildStoryPrompt(body, childName, ageLabel, family);
-  const response = await openai.responses.create({
-    model: process.env.OPENAI_TEXT_MODEL || "gpt-5.6-terra",
-    input: prompt,
-  });
+  const basePrompt = buildStoryPrompt(body, childName, ageLabel, family);
+  const prompt = `${basePrompt}\n\nIMPORTANTE:\nDevuelve EXCLUSIVAMENTE JSON válido, sin markdown ni texto adicional, con esta forma:\n{\n  \"title\": \"string\",\n  \"story\": \"string\",\n  \"reflection\": \"string\",\n  \"illustrationScenes\": [\n    {\"title\": \"string\", \"description\": \"string\"}\n  ]\n}\n\nPara illustrationScenes propone entre 4 y 8 escenas visuales concretas.\nNo inventes hechos históricos centrales. En historias personales, no inventes recuerdos que no estén en las notas o en la ficha familiar.`;
 
   try {
-    const parsed = parseModelJson(response.output_text);
+    const output = await generateWithGemini(prompt);
+    const parsed = parseModelJson(output);
+
     const story: Story = {
       id: crypto.randomUUID(),
       title: String(parsed.title || body.topic),
@@ -62,11 +65,12 @@ export async function POST(request: Request) {
           }))
         : [],
     };
+
     return NextResponse.json(story);
-  } catch (error) {
-    console.error("Model returned invalid JSON", response.output_text, error);
+  } catch (error: any) {
+    console.error(error);
     return NextResponse.json(
-      { error: "The model returned an unexpected format. Please retry." },
+      { error: error?.message || "No se pudo crear el cuento." },
       { status: 502 },
     );
   }
