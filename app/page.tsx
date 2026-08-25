@@ -1,6 +1,7 @@
 import Link from "next/link";
-import { auth, signIn } from "@/auth";
+import { auth } from "@/auth";
 import { Nav } from "@/components/nav";
+import { LoginButton } from "@/components/login-button";
 
 export default async function Home() {
   const session = await auth();
@@ -15,14 +16,7 @@ export default async function Home() {
             Historia, mitología y recuerdos familiares convertidos en cuentos,
             ilustraciones y, cuando merezca la pena, libros físicos.
           </p>
-          <form
-            action={async () => {
-              "use server";
-              await signIn("google", { redirectTo: "/new" });
-            }}
-          >
-            <button className="primary" type="submit">Entrar con Google</button>
-          </form>
+          <LoginButton />
           <p className="muted small">Google se usa para identificar a la familia y guardar la biblioteca en Drive.</p>
         </section>
       </main>
